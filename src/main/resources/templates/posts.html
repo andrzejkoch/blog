@@ -8,11 +8,16 @@
 <h3>
     Moje posty
 </h3>
+<h3>
+    ====================================
+</h3>
 
 <div th:each="post : ${posts}">
     <h2 th:text="${post.title}"></h2>
-    <h2 th:text="${post.content}"></h2>
-
+    <h4 th:text="${post.content}"></h4>
+    <h3>
+        ----------------------------------------------
+    </h3>
 </div>
 </body>
 </html>

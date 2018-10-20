@@ -1,5 +1,6 @@
 package com.tomaszr.blog.model.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,8 +14,13 @@ import java.util.Set;
 @Setter
 @Entity
 @NoArgsConstructor
-
+@AllArgsConstructor
 public class Post {
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
     //id, title, content,
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,4 +35,8 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private Set<PostComment> comments = new HashSet<>();
 
+    public void addComment(PostComment postComment) {
+        comments.add(postComment);
+        postComment.setPost(this);
+    }
 }
