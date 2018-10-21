@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraintvalidation.SupportedValidationTarget;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,8 +33,16 @@ public class Post {
     @Embedded
     private AuditEntity audit = new AuditEntity();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade={CascadeType.MERGE, CascadeType.PERSIST})
     private Set<PostComment> comments = new HashSet<>();
+
+
+
+    @ManyToOne
+    @JoinColumn(name="userId")
+    @Getter
+    @Setter
+    private User user;
 
     public void addComment(PostComment postComment) {
         comments.add(postComment);

@@ -6,13 +6,11 @@ import com.tomaszr.blog.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class MainController {
@@ -52,6 +50,39 @@ public class MainController {
     public String addPost(){
 
         return "addPost"; // taka templatka html
+    }
+
+    @GetMapping("/post/{postId}")
+    public String post(@PathVariable Long postId, Model model) {
+        Optional<Post> postOptional=postRepository.findById(postId);
+        postOptional.ifPresent(post ->{
+            model.addAttribute("post",post);
+        });
+        return "post";
+    }
+
+    @GetMapping("/delete/{postId}")
+    @ResponseBody
+    public String delete(@PathVariable Long postId, Model model) {
+        postRepository.deleteById(postId);
+
+        return ("Usunieto: "+postId);
+    }
+
+    @PostMapping("/post/addComment")
+    public String addComment(@RequestParam String commentBody,@RequestParam Long postId){
+        PostComment postComment=new PostComment();
+        postComment.setComment(commentBody);
+
+        Optional<Post> postOptional=postRepository.findById(postId);
+
+        postOptional.ifPresent(post->{
+            post.addComment(postComment);
+            postRepository.save(post);
+        });
+
+        return ("redirect:/post/"+postId);
+
     }
 
 }
